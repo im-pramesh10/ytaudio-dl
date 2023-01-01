@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Check if a YouTube URL was provided as an argument
+if [[ -z $1 ]]; then
+   echo "Please provide a YouTube URL as an argument"
+   exit 1
+fi
+
+# Download the YouTube video and save it to a file
+yt-dlp "$1"
+
+# Get the filename of the downloaded video
+video_file=$(yt-dlp --get-filename "$1")
+
+# Get the filename without the extension
+mp3_file="${video_file%.*}.mp3"
+
+# Convert the video to an MP3 file
+ffmpeg -i "$video_file" -vn -ab 320k "$mp3_file"
+
+# Delete the original video file
+rm "$video_file"
+
+echo "Finished downloading and converting YouTube video to MP3: $mp3_file"
+
